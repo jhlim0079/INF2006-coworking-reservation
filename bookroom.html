@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Search Workspaces - Reservation Page</title>
+  <title>Book Workspace - Reservation Page</title>
   <link rel="stylesheet" href="css/styles.css" />
   <style>
     .filters {
@@ -11,12 +11,95 @@
       flex-wrap: wrap;
       gap: 15px;
       align-items: center;
+      margin-bottom: 20px;
     }
-    .filters label {
-      white-space: nowrap;
+    .filters select, .filters button {
+      padding: 10px;
+      font-size: 1rem;
+      border-radius: 5px;
     }
-    .filters select {
-      margin-left: 5px;
+    .filters button {
+      background-color: #3498db;
+      color: white;
+      cursor: pointer;
+    }
+    .filters button:hover {
+      background-color: #2980b9;
+    }
+    .calendar {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .calendar-container {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+      margin: 20px 0;
+    }
+    .calendar-day {
+      background-color: #f1f1f1;
+      padding: 10px;
+      text-align: center;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+    .calendar-day:hover {
+      background-color: #3498db;
+      color: white;
+    }
+    .calendar-day.selected {
+      background-color: #3498db;
+      color: white;
+    }
+    .workspace-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      justify-items: center;
+    }
+    .workspace-card {
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 250px;
+    }
+    .workspace-card h4 {
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #333;
+    }
+    .workspace-card p {
+      margin: 5px 0;
+      font-size: 1rem;
+      color: #555;
+    }
+    .time-slots {
+      margin-top: 20px;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    .time-slot {
+      padding: 10px;
+      background-color: #e0e0e0;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .time-slot:hover {
+      background-color: #3498db;
+      color: white;
+    }
+    .time-slot.selected {
+      background-color: #3498db;
+      color: white;
     }
   </style>
 </head>
@@ -36,64 +119,185 @@
 
   <!-- Main Content -->
   <main class="available-workspaces-page">
-    <h2 class="available-workspaces-title">Available Workspaces</h2>
-    <!-- Search Filters -->
+    <h2 class="available-workspaces-title">Book Workspace</h2>
+
+    <!-- Select Location -->
     <section class="filters">
-      <label for="locationFilter">Location:</label>
+      <label for="locationFilter">Select Location:</label>
       <select id="locationFilter">
-        <option value="">All</option>
+        <option value="">Select a Location</option>
         <option value="Singapore">Singapore</option>
         <option value="New York">New York</option>
         <option value="London">London</option>
         <option value="San Francisco">San Francisco</option>
       </select>
-  
-      <label for="capacityFilter">Capacity:</label>
-      <select id="capacityFilter">
-        <option value="">All</option>
-        <option value="1">1 Person</option>
-        <option value="2-4">2-4 People</option>
-        <option value="5-10">5-10 People</option>
-        <option value="11+">11+ People</option>
-      </select>
-  
-      <label for="priceFilter">Price Range:</label>
-      <select id="priceFilter">
-        <option value="">All</option>
-        <option value="0-10">$0 - $10/hr</option>
-        <option value="10-25">$10 - $25/hr</option>
-        <option value="25-50">$25 - $50/hr</option>
-        <option value="50-100">$50 - $100/hr</option>
-        <option value="100+">$100+/hr</option>
-      </select>
-  
-      <label for="availabilityFilter">Availability:</label>
-      <select id="availabilityFilter">
-        <option value="">All</option>
-        <option value="available">Available Now</option>
-        <option value="soon">Available Soon</option>
-        <option value="fully-booked">Fully Booked</option>
-      </select>
-  
-      <button id="filterBtn">Filter</button>
     </section>
-  
-    <!-- Workspace Cards Container -->
-    <section id="workspaceContainer" class="workspace-container">
-        <!-- Will be injected via Javascript -->
+
+    <!-- Workspace Options (Available after Location Selection) -->
+    <section id="workspaceOptionsSection" style="display: none;">
+      <h3>Select a Workspace</h3>
+      <div id="workspaceContainer" class="workspace-container">
+        <!-- Workspaces will be populated dynamically based on location -->
+      </div>
+    </section>
+
+    <!-- Date Picker/Calendar -->
+    <section class="calendar" id="calendarSection" style="display: none;">
+      <div id="calendar" class="calendar-container">
+        <!-- Days will be injected here -->
+      </div>
+    </section>
+
+    <!-- Time Slots (Initially Hidden) -->
+    <section id="timeSlotsSection" class="time-slots" style="display: none;">
+      <h3>Select a time slot</h3>
+      <!-- Available time slots will be displayed here -->
+    </section>
+
+    <!-- Booking Confirmation -->
+    <section id="bookingForm" class="booking-form" style="display: none;">
+      <h3>Booking Confirmation</h3>
+      <p id="selectedWorkspaceDetails"></p>
+      <p id="selectedTimeSlotDetails"></p>
+      <button id="confirmBookingBtn">Confirm Booking</button>
     </section>
   </main>
-  
-  <!-- Booking Modal -->
-  <div id="bookingModal" class="modal">
-    <div class="modal-content">
-      <span id="closeModal" class="close">&times;</span>
-      <p id="modalText">Booking simulation</p>
-      <button id="confirmBooking">Confirm Booking</button>
-    </div>
-  </div>
 
-  <!-- Include the main application code as a module -->
-  <script type="module" src="js/reservations.js"></script>
+  <script>
+    const workspaces = {
+      Singapore: [
+        { id: 'workspace1', location: 'Singapore', capacity: '2-4 People', price: '$25/hr' },
+        { id: 'workspace2', location: 'Singapore', capacity: '5-10 People', price: '$50/hr' }
+      ],
+      NewYork: [
+        { id: 'workspace3', location: 'New York', capacity: '1 Person', price: '$10/hr' }
+      ],
+      London: [
+        { id: 'workspace4', location: 'London', capacity: '2-4 People', price: '$30/hr' }
+      ],
+      SanFrancisco: [
+        { id: 'workspace5', location: 'San Francisco', capacity: '1 Person', price: '$20/hr' }
+      ]
+    };
+
+    const availableTimeslots = {
+      '2025-02-20': ['9:00 AM - 12:00 PM', '1:00 PM - 4:00 PM'],
+      '2025-02-21': ['9:00 AM - 12:00 PM'],
+      '2025-02-22': ['10:00 AM - 1:00 PM', '2:00 PM - 5:00 PM']
+    };
+
+    // Show workspaces based on location
+    document.getElementById('locationFilter').addEventListener('change', function() {
+      const location = this.value;
+      if (location) {
+        showWorkspaces(location);
+      } else {
+        hideWorkspaces();
+      }
+    });
+
+    // Display workspaces based on location
+    function showWorkspaces(location) {
+      const workspaceContainer = document.getElementById('workspaceContainer');
+      workspaceContainer.innerHTML = '';
+
+      const selectedWorkspaces = workspaces[location];
+      selectedWorkspaces.forEach(workspace => {
+        const workspaceCard = document.createElement('div');
+        workspaceCard.classList.add('workspace-card');
+        workspaceCard.innerHTML = `
+          <h4>${workspace.location}</h4>
+          <p>Capacity: ${workspace.capacity}</p>
+          <p>Price: ${workspace.price}</p>
+          <button onclick="selectWorkspace('${workspace.location}')">Select Workspace</button>
+        `;
+        workspaceContainer.appendChild(workspaceCard);
+      });
+
+      document.getElementById('workspaceOptionsSection').style.display = 'block';
+    }
+
+    // Hide workspace section
+    function hideWorkspaces() {
+      document.getElementById('workspaceOptionsSection').style.display = 'none';
+    }
+
+    // Handle workspace selection
+    function selectWorkspace(location) {
+      document.getElementById('calendarSection').style.display = 'block';
+      renderCalendar();
+    }
+
+    // Function to render the calendar days
+    function renderCalendar() {
+      const calendar = document.getElementById('calendar');
+      const daysInMonth = new Date(2025, 1, 0).getDate(); // February 2025
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dayElement = document.createElement('div');
+        dayElement.classList.add('calendar-day');
+        dayElement.innerText = day;
+        const formattedDate = `2025-02-${day < 10 ? '0' + day : day}`;
+
+        if (availableTimeslots[formattedDate]) {
+          dayElement.addEventListener('click', () => selectDate(formattedDate));
+          calendar.appendChild(dayElement);
+        } else {
+          dayElement.style.backgroundColor = '#e0e0e0';
+        }
+      }
+    }
+
+    // Handle date selection
+    function selectDate(date) {
+      document.querySelectorAll('.calendar-day').forEach(dayElement => {
+        dayElement.classList.remove('selected');
+      });
+
+      const selectedDayElement = Array.from(document.querySelectorAll('.calendar-day')).find(dayElement => {
+        return dayElement.innerText === date.split('-')[2];
+      });
+      selectedDayElement.classList.add('selected');
+
+      showTimeSlots(date);
+    }
+
+    // Show available time slots based on selected date
+    function showTimeSlots(date) {
+      const timeSlotsSection = document.getElementById('timeSlotsSection');
+      timeSlotsSection.style.display = 'block';
+      timeSlotsSection.innerHTML = `
+        <h3>Available Time Slots for ${date}</h3>
+      `;
+      availableTimeslots[date].forEach(time => {
+        const timeSlotElement = document.createElement('div');
+        timeSlotElement.classList.add('time-slot');
+        timeSlotElement.innerText = time;
+        timeSlotElement.addEventListener('click', () => selectTimeSlot(time));
+        timeSlotsSection.appendChild(timeSlotElement);
+      });
+    }
+
+    // Handle time slot selection
+    function selectTimeSlot(time) {
+      document.querySelectorAll('.time-slot').forEach(slot => {
+        slot.classList.remove('selected');
+      });
+
+      const selectedSlot = Array.from(document.querySelectorAll('.time-slot')).find(slot => {
+        return slot.innerText === time;
+      });
+      selectedSlot.classList.add('selected');
+
+      showBookingDetails(time);
+    }
+
+    // Show booking details
+    function showBookingDetails(time) {
+      document.getElementById('bookingForm').style.display = 'block';
+      document.getElementById('selectedWorkspaceDetails').innerText = `Workspace: Selected`;
+      document.getElementById('selectedTimeSlotDetails').innerText = `Time Slot: ${time}`;
+    }
+  </script>
 </body>
 </html>
