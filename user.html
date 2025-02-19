@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Dashboard</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <!-- Navigation/Header -->
+  <header>
+    <nav>
+      <div class="logo">
+        <h1>Co-Working Reservation</h1>
+      </div>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="bookroom.html">Book Room</a></li>
+        <li><a href="dashboard.html" class="active">Dashboard</a></li>
+        <li><a href="#" onclick="logout()">Log Out</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="dashboard-page">
+    <h2>User Dashboard</h2>
+    <section class="user-info">
+      <h3>Welcome, [User Name]</h3>
+    </section>
+
+    <h2>Your Reservations</h2>
+    <section class="filters">
+      <label for="locationFilter">Location:</label>
+      <select id="locationFilter">
+        <option value="">All</option>
+        <option value="Singapore">Singapore</option>
+        <option value="New York">New York</option>
+        <option value="London">London</option>
+        <option value="San Francisco">San Francisco</option>
+      </select>
+  
+      <label for="capacityFilter">Capacity:</label>
+      <select id="capacityFilter">
+        <option value="">All</option>
+        <option value="1">1 Person</option>
+        <option value="2-4">2-4 People</option>
+        <option value="5-10">5-10 People</option>
+        <option value="11+">11+ People</option>
+      </select>
+  
+      <label for="priceFilter">Price Range:</label>
+      <select id="priceFilter">
+        <option value="">All</option>
+        <option value="0-10">$0 - $10/hr</option>
+        <option value="10-25">$10 - $25/hr</option>
+        <option value="25-50">$25 - $50/hr</option>
+        <option value="50-100">$50 - $100/hr</option>
+        <option value="100+">$100+/hr</option>
+      </select>
+  
+      <label for="availabilityFilter">Availability:</label>
+      <select id="availabilityFilter">
+        <option value="">All</option>
+        <option value="available">Available Now</option>
+        <option value="soon">Available Soon</option>
+        <option value="fully-booked">Fully Booked</option>
+      </select>
+  
+      <button id="filterBtn">Filter</button>
+    </section>
+
+    <section id="reservationsContainer" class="reservations-container">
+      <!-- Reservations will be injected via JavaScript -->
+    </section>
+  </main>
+
+  <!-- Reservation Actions -->
+  <div id="reservationActions" class="modal">
+    <div class="modal-content">
+      <span id="closeModal" class="close">&times;</span>
+      <p>Modify or Cancel Reservation</p>
+      <button id="modifyReservation">Modify</button>
+      <button id="cancelReservation">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Include the dashboard management script -->
+  <script type="module" src="js/dashboard.js"></script>
+</body>
+</html>
