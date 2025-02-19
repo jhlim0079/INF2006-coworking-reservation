@@ -1,53 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Reserved Workspaces - Co-Working Reservation</title>
-  <link rel="stylesheet" href="css/styles.css" />
-</head>
-<body>
-  <header>
-    <nav>
-      <div class="logo">
-        <h1>Co-Working Reservation</h1>
-      </div>
-      <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="login.html">Login</a></li>
-        <li><a href="bookroom.html">Book Room</a></li>
-        <li><a href="user.html">User Dashboard</a></li>
-        <li><a href="admin.html">Admin Dashboard</a></li>
-      </ul>
-    </nav>
-  </header>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reserved Workspaces - Co-Working Reservation</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div class="logo">
+          <h1>Co-Working Reservation</h1>
+        </div>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="login.html">Login</a></li>
+          <li><a href="bookroom.html">Book Room</a></li>
+          <li><a href="user.html">User Dashboard</a></li>
+          <li><a href="admin.html">Admin Dashboard</a></li>
+          <li></li><button id="logoutBtn" class="logout-btn">Logout</button></li>
+        </ul>
+      </nav>
+    </header>
 
-  <main class="reserved-page">
-    <h2 class="reserved-title">My Reserved Workspaces</h2>
-    <section id="reservedContainer" class="reserved-container">
-      <!-- Reserved workspace details will be injected here via JavaScript -->
-    </section>
-  
-    <!-- Modify Reservation Modal -->
-    <div id="modifyModal" class="modal">
-      <div class="modal-content">
-        <span id="closeModify" class="close">&times;</span>
-        <h3>Modify Reservation</h3>
-        <label for="modifyDate">Reservation Date:</label>
-        <input type="date" id="modifyDate" required />
-  
-        <label for="modifyStartTime">Start Time:</label>
-        <input type="time" id="modifyStartTime" required />
-  
-        <label for="modifyEndTime">End Time:</label>
-        <input type="time" id="modifyEndTime" required />
-  
-        <button id="confirmModify" disabled>Confirm Changes</button>
-      </div>
-    </div>
-  </main>
-  
+    <main class="reserved-page">
+      <h2 class="reserved-title">Admin Dashboard</h2>
 
-  <script type="module" src="js/reserved.js"></script>
-</body>
+      <!-- Manage Rooms Section -->
+      <section class="reserved-container">
+        <h3>Manage Rooms</h3>
+        <form id="addRoomForm">
+          <input type="text" id="roomName" placeholder="Room Name" required />
+          <input type="text" id="roomType" placeholder="Room Type" required />
+          <input type="number" id="roomPrice" placeholder="Price" required />
+          <input
+            type="text"
+            id="roomLocation"
+            placeholder="Location"
+            required
+          />
+          <button type="submit">Add Room</button>
+        </form>
+        <div id="roomContainer" class="reserved-container"></div>
+      </section>
+
+      <!-- Manage Bookings Section -->
+      <section class="reserved-container">
+        <h3>Confirmed Bookings</h3>
+        <div id="bookingContainer" class="reserved-container"></div>
+      </section>
+
+      <!-- Reserved Workspaces (User View) -->
+      <section id="reservedContainer" class="reserved-container">
+        <h3>My Reserved Workspaces</h3>
+        <!-- Reserved workspace details will be injected here via reserved.js -->
+      </section>
+
+      <!-- Modify Reservation Modal (For Users) -->
+      <div id="modifyModal" class="modal">
+        <div class="modal-content">
+          <span id="closeModify" class="close">&times;</span>
+          <h3>Modify Reservation</h3>
+          <label for="modifyDate">Reservation Date:</label>
+          <input type="date" id="modifyDate" required />
+
+          <label for="modifyStartTime">Start Time:</label>
+          <input type="time" id="modifyStartTime" required />
+
+          <label for="modifyEndTime">End Time:</label>
+          <input type="time" id="modifyEndTime" required />
+
+          <button id="confirmModify" disabled>Confirm Changes</button>
+        </div>
+      </div>
+    </main>
+    <script type="module" src="js/reserved.js"></script>
+    <script type="module" src="js/admin.js"></script>
+  </body>
 </html>
