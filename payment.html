@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment - Co-Working Reservation</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    /* Basic styles for payment page layout */
+    .payment-page {
+      max-width: 400px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .payment-page h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .payment-page form div {
+      margin-bottom: 15px;
+    }
+    .payment-page form label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    .payment-page form input {
+      width: 100%;
+      padding: 8px;
+      font-size: 1rem;
+    }
+    #payButton {
+      background-color: #ff6600;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      width: 100%;
+      font-size: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    #payButton:hover {
+      background-color: #e65c00;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <div class="logo">
+        <h1>Co-Working Reservation</h1>
+      </div>
+      <ul class="nav-links">
+        <li><a href="user.html">User Dashboard</a></li>
+        <li><a href="search.html">Search Workspaces</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="payment-page">
+    <h2>Payment</h2>
+    <form id="paymentForm">
+      <div>
+        <label for="cardNumber">Credit Card Number:</label>
+        <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" required />
+      </div>
+      <div>
+        <label for="expiryDate">Expiry Date:</label>
+        <input type="month" id="expiryDate" required />
+      </div>
+      <div>
+        <label for="cvv">CVV:</label>
+        <input type="text" id="cvv" placeholder="123" required />
+      </div>
+      <button type="submit" id="payButton">Pay Now</button>
+    </form>
+  </main>
+
+  <script type="module" src="js/payment.js"></script>
+</body>
+</html>

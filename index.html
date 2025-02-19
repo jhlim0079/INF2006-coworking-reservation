@@ -75,5 +75,19 @@
   </footer>
 
   <script src="js/app.js"></script>
+
+  <!-- Need to change below script when deployed to AWS -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Check if the user is logged in.
+      // You can set this flag when the user successfully logs in.
+      const isLoggedIn = localStorage.getItem('loggedIn');
+      
+      // If the user is logged in, redirect to the reservations page.
+      if (isLoggedIn === 'true') {
+        window.location.href = 'user.html';
+      }
+    });
+  </script>
 </body>
 </html>

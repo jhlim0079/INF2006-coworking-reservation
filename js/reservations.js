@@ -166,10 +166,21 @@ document.getElementById('confirmBooking').addEventListener('click', () => {
   const startTime = document.getElementById('startTime').value;
   const endTime = document.getElementById('endTime').value;
 
-  // (In a real application, these values would be sent to the backend to create a reservation)
-  alert(`Booking confirmed (simulation)!\nDate: ${reservationDate}\nTime: ${startTime} - ${endTime}`);
-  modal.style.display = "none";
+  // Simple validation: check if all fields have values
+  if (!reservationDate || !startTime || !endTime) {
+    alert("Please fill in all the required fields before proceeding to payment.");
+    return; // Stop execution if validation fails
+  }
+
+  // Optionally store booking details in localStorage for the payment page
+  const bookingDetails = { reservationDate, startTime, endTime };
+  localStorage.setItem('bookingDetails', JSON.stringify(bookingDetails));
+
+  // Redirect to the payment page
+  window.location.href = 'payment.html';
 });
+
+
 
 document.getElementById('filterBtn').addEventListener('click', filterWorkspaces);
 
