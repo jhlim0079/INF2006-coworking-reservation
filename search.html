@@ -5,6 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Search Workspaces - Reservation Page</title>
   <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      align-items: center;
+    }
+    .filters label {
+      white-space: nowrap;
+    }
+    .filters select {
+      margin-left: 5px;
+    }
+  </style>
 </head>
 <body>
   <!-- Navigation/Header -->
@@ -29,16 +43,41 @@
     <h2 class="available-workspaces-title">Available Workspaces</h2>
     <!-- Search Filters -->
     <section class="filters">
-      <label for="typeFilter">Type:</label>
-      <select id="typeFilter">
+      <label for="locationFilter">Location:</label>
+      <select id="locationFilter">
         <option value="">All</option>
-        <option value="desk">Desk</option>
-        <option value="meeting room">Meeting Room</option>
-        <option value="private office">Private Office</option>
+        <option value="Singapore">Singapore</option>
+        <option value="New York">New York</option>
+        <option value="London">London</option>
+        <option value="San Francisco">San Francisco</option>
       </select>
   
-      <label for="locationFilter">Location:</label>
-      <input type="text" id="locationFilter" placeholder="Enter location" />
+      <label for="capacityFilter">Capacity:</label>
+      <select id="capacityFilter">
+        <option value="">All</option>
+        <option value="1">1 Person</option>
+        <option value="2-4">2-4 People</option>
+        <option value="5-10">5-10 People</option>
+        <option value="11+">11+ People</option>
+      </select>
+  
+      <label for="priceFilter">Price Range:</label>
+      <select id="priceFilter">
+        <option value="">All</option>
+        <option value="0-10">$0 - $10/hr</option>
+        <option value="10-25">$10 - $25/hr</option>
+        <option value="25-50">$25 - $50/hr</option>
+        <option value="50-100">$50 - $100/hr</option>
+        <option value="100+">$100+/hr</option>
+      </select>
+  
+      <label for="availabilityFilter">Availability:</label>
+      <select id="availabilityFilter">
+        <option value="">All</option>
+        <option value="available">Available Now</option>
+        <option value="soon">Available Soon</option>
+        <option value="fully-booked">Fully Booked</option>
+      </select>
   
       <button id="filterBtn">Filter</button>
     </section>
@@ -49,7 +88,6 @@
     </section>
   </main>
   
-
   <!-- Booking Modal -->
   <div id="bookingModal" class="modal">
     <div class="modal-content">
