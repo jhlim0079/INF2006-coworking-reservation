@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Search Workspaces - Reservation Page</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <!-- Navigation/Header -->
+  <header>
+    <nav>
+      <div class="logo">
+        <h1>Co-Working Reservation</h1>
+      </div>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="login.html">Login/Sign Up</a></li>
+        <li><a href="search.html">Search Workspaces</a></li>
+        <li><a href="reserved.html">Reserved Workspaces</a></li>
+        <li><a href="profile.html">Profile</a></li>
+        <li><a href="admin.html">Admin Dashboard</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="available-workspaces-page">
+    <h2 class="available-workspaces-title">Available Workspaces</h2>
+    <!-- Search Filters -->
+    <section class="filters">
+      <label for="typeFilter">Type:</label>
+      <select id="typeFilter">
+        <option value="">All</option>
+        <option value="desk">Desk</option>
+        <option value="meeting room">Meeting Room</option>
+        <option value="private office">Private Office</option>
+      </select>
+  
+      <label for="locationFilter">Location:</label>
+      <input type="text" id="locationFilter" placeholder="Enter location" />
+  
+      <button id="filterBtn">Filter</button>
+    </section>
+  
+    <!-- Workspace Cards Container -->
+    <section id="workspaceContainer" class="workspace-container">
+        <!-- Will be injected via Javascript -->
+    </section>
+  </main>
+  
+
+  <!-- Booking Modal -->
+  <div id="bookingModal" class="modal">
+    <div class="modal-content">
+      <span id="closeModal" class="close">&times;</span>
+      <p id="modalText">Booking simulation</p>
+      <button id="confirmBooking">Confirm Booking</button>
+    </div>
+  </div>
+
+  <!-- Include the main application code as a module -->
+  <script type="module" src="js/reservations.js"></script>
+</body>
+</html>
