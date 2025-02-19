@@ -28,7 +28,26 @@
     <section id="reservedContainer" class="reserved-container">
       <!-- Reserved workspace details will be injected here via JavaScript -->
     </section>
+  
+    <!-- Modify Reservation Modal -->
+    <div id="modifyModal" class="modal">
+      <div class="modal-content">
+        <span id="closeModify" class="close">&times;</span>
+        <h3>Modify Reservation</h3>
+        <label for="modifyDate">Reservation Date:</label>
+        <input type="date" id="modifyDate" required />
+  
+        <label for="modifyStartTime">Start Time:</label>
+        <input type="time" id="modifyStartTime" required />
+  
+        <label for="modifyEndTime">End Time:</label>
+        <input type="time" id="modifyEndTime" required />
+  
+        <button id="confirmModify" disabled>Confirm Changes</button>
+      </div>
+    </div>
   </main>
+  
 
   <script type="module" src="js/reserved.js"></script>
 </body>
