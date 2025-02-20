@@ -214,6 +214,10 @@
           location: "London",
         },
       ];
+      function addMockRoom(newRoom) {
+        mockRooms.push(newRoom); // ✅ Add to the mockRooms array
+        loadMockRooms(); // ✅ Refresh the displayed rooms
+      }
 
       function loadMockRooms() {
         const roomContainer = document.getElementById("roomContainer");
