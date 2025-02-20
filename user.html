@@ -369,25 +369,29 @@
 
       // Function to render the calendar days
       function renderCalendar() {
-        const calendar = document.getElementById("calendar");
-        const daysInMonth = new Date(2025, 1, 0).getDate(); // February 2025
+          const calendar = document.getElementById("calendar");
 
-        for (let day = 1; day <= daysInMonth; day++) {
-          const dayElement = document.createElement("div");
-          dayElement.classList.add("calendar-day");
-          dayElement.innerText = day;
-          const formattedDate = `2025-02-${day < 10 ? "0" + day : day}`;
+          // Clear existing calendar before rendering new dates
+          calendar.innerHTML = "";  
 
-          if (availableTimeslots[formattedDate]) {
-            dayElement.addEventListener("click", () =>
-              selectDate(formattedDate)
-            );
-            calendar.appendChild(dayElement);
-          } else {
-            dayElement.style.backgroundColor = "#e0e0e0";
-          }
+          const daysInMonth = new Date(2025, 1, 0).getDate(); // February 2025
+
+          for (let day = 1; day <= daysInMonth; day++) {
+              const dayElement = document.createElement("div");
+              dayElement.classList.add("calendar-day");
+              dayElement.innerText = day;
+              const formattedDate = `2025-02-${day < 10 ? "0" + day : day}`;
+
+              if (availableTimeslots[formattedDate]) {
+                  dayElement.addEventListener("click", () =>
+                      selectDate(formattedDate)
+                  );
+                  calendar.appendChild(dayElement);
+              } else {
+                  dayElement.style.backgroundColor = "#e0e0e0";
         }
-      }
+    }
+}
 
       // Handle date selection
       function selectDate(date) {
@@ -407,19 +411,20 @@
 
       // Show available time slots based on selected date
       function showTimeSlots(date) {
-        const timeSlotsSection = document.getElementById("timeSlotsSection");
-        timeSlotsSection.style.display = "block";
-        timeSlotsSection.innerHTML = `
-        <h3>Available Time Slots for ${date}</h3>
-      `;
-        availableTimeslots[date].forEach((time) => {
-          const timeSlotElement = document.createElement("div");
-          timeSlotElement.classList.add("time-slot");
-          timeSlotElement.innerText = time;
-          timeSlotElement.addEventListener("click", () => selectTimeSlot(time));
-          timeSlotsSection.appendChild(timeSlotElement);
-        });
-      }
+          const timeSlotsSection = document.getElementById("timeSlotsSection");
+          timeSlotsSection.style.display = "block";
+
+          // Clear any previous timeslots
+          timeSlotsSection.innerHTML = `<h3>Available Time Slots for ${date}</h3>`;
+
+          availableTimeslots[date].forEach((time) => {
+              const timeSlotElement = document.createElement("div");
+              timeSlotElement.classList.add("time-slot");
+              timeSlotElement.innerText = time;
+              timeSlotElement.addEventListener("click", () => selectTimeSlot(time));
+              timeSlotsSection.appendChild(timeSlotElement);
+    });
+}
 
       // Handle time slot selection
       function selectTimeSlot(time) {
