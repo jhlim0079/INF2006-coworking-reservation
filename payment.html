@@ -26,7 +26,8 @@
       display: block;
       margin-bottom: 5px;
     }
-    .payment-page form input {
+    .payment-page form input,
+    .payment-page form select {
       width: 100%;
       padding: 8px;
       font-size: 1rem;
@@ -66,8 +67,26 @@
         <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" required />
       </div>
       <div>
-        <label for="expiryDate">Expiry Date:</label>
-        <input type="month" id="expiryDate" required />
+        <label for="expiryMonth">Expiry Date:</label>
+        <select id="expiryMonth" required>
+          <option value="">Month</option>
+          <option value="01">January</option>
+          <option value="02">February</option>
+          <option value="03">March</option>
+          <option value="04">April</option>
+          <option value="05">May</option>
+          <option value="06">June</option>
+          <option value="07">July</option>
+          <option value="08">August</option>
+          <option value="09">September</option>
+          <option value="10">October</option>
+          <option value="11">November</option>
+          <option value="12">December</option>
+        </select>
+        <select id="expiryYear" required>
+          <option value="">Year</option>
+          <!-- Years will be populated dynamically -->
+        </select>
       </div>
       <div>
         <label for="cvv">CVV:</label>
@@ -78,5 +97,17 @@
   </main>
 
   <script type="module" src="js/payment.js"></script>
+  <script>
+    // Dynamically populate the year dropdown
+    const yearSelect = document.getElementById('expiryYear');
+    const currentYear = new Date().getFullYear();
+    for (let i = 0; i < 10; i++) {
+      const year = currentYear + i;
+      const option = document.createElement('option');
+      option.value = year;
+      option.textContent = year;
+      yearSelect.appendChild(option);
+    }
+  </script>
 </body>
 </html>
