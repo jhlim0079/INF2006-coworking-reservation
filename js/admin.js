@@ -19,7 +19,17 @@ function checkAdminAuth() {
     window.location.href = "index.html"; // Redirect to homepage if not admin
   }
 }
-// Function to log out admin
+//Logout Function
+document.addEventListener("DOMContentLoaded", () => {
+  const logoutLink = document.getElementById("logoutLink");
+  if (logoutLink) {
+    logoutLink.addEventListener("click", (event) => {
+      event.preventDefault(); // Prevent the default anchor behavior
+      logoutAdmin(); // Call the logout function
+    });
+  }
+});
+
 function logoutAdmin() {
   localStorage.removeItem("userRole"); // Clear stored role
   window.location.href = "index.html"; // Redirect to homepage

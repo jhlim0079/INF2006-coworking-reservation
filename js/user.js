@@ -15,6 +15,21 @@ document.addEventListener("DOMContentLoaded", () => {
     confirmBookingBtn.addEventListener("click", confirmBooking);
   }
 });
+//Logout Function
+document.addEventListener("DOMContentLoaded", () => {
+  const logoutLink = document.getElementById("logoutLink");
+  if (logoutLink) {
+    logoutLink.addEventListener("click", (event) => {
+      event.preventDefault(); // Prevent the default anchor behavior
+      logoutUser(); // Call the logout function
+    });
+  }
+});
+
+function logoutUser() {
+  localStorage.removeItem("userRole"); // Clear stored role
+  window.location.href = "index.html"; // Redirect to homepage
+}
 
 /* 
 // ----- AWS Integration (Uncomment when deploying) -----
