@@ -3,8 +3,125 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Reserved Workspaces - Co-Working Reservation</title>
+    <title>Admin Dashboard - Co-Working Reservation</title>
     <link rel="stylesheet" href="css/styles.css" />
+    <style>
+      .dashboard-container {
+        max-width: 1200px;
+        margin: auto;
+        padding: 20px;
+      }
+
+      .reserved-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        margin: 30px auto;
+        width: 100%;
+        max-width: 600px;
+      }
+
+      .dashboard-card {
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 15px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 100%;
+        max-width: 400px;
+      }
+
+      .dashboard-card h3 {
+        margin: 0;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #333;
+      }
+
+      .dashboard-card p {
+        margin: 5px 0;
+        font-size: 1rem;
+        color: #555;
+      }
+
+      .dashboard-card button {
+        background-color: #e74c3c;
+        color: white;
+        font-size: 1rem;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .dashboard-card button:hover {
+        background-color: #c0392b;
+      }
+
+      .dashboard-title {
+        text-align: center;
+        font-size: 2rem;
+        color: #333;
+        margin-bottom: 20px;
+      }
+
+      /* ===== Centered Add Room Form Styling ===== */
+      .add-room-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      #addRoomForm {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        text-align: center;
+      }
+
+      #addRoomForm input {
+        width: 90%;
+        padding: 12px;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        text-align: center;
+        margin-bottom: 10px;
+        transition: border 0.3s ease-in-out;
+      }
+
+      #addRoomForm input:focus {
+        border-color: #3498db;
+        outline: none;
+        box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+      }
+
+      #addRoomForm button {
+        background-color: #28a745;
+        color: white;
+        font-size: 1rem;
+        padding: 12px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        width: 100%;
+      }
+
+      #addRoomForm button:hover {
+        background-color: #218838;
+      }
+    </style>
   </head>
   <body>
     <header>
@@ -18,13 +135,13 @@
           <li><a href="bookroom.html">Book Room</a></li>
           <li><a href="user.html">User Dashboard</a></li>
           <li><a href="admin.html">Admin Dashboard</a></li>
-          <li></li><button id="logoutBtn" class="logout-btn">Logout</button></li>
+          <li><button id="logoutBtn" class="logout-btn">Logout</button></li>
         </ul>
       </nav>
     </header>
 
-    <main class="reserved-page">
-      <h2 class="reserved-title">Admin Dashboard</h2>
+    <main class="dashboard-container">
+      <h2 class="dashboard-title">Admin Dashboard</h2>
 
       <!-- Manage Rooms Section -->
       <section class="reserved-container">
@@ -41,40 +158,127 @@
           />
           <button type="submit">Add Room</button>
         </form>
-        <div id="roomContainer" class="reserved-container"></div>
+      </section>
+
+      <section class="reserved-container" id="roomContainer">
+        <!-- Rooms will be populated here -->
       </section>
 
       <!-- Manage Bookings Section -->
-      <section class="reserved-container">
-        <h3>Confirmed Bookings</h3>
-        <div id="bookingContainer" class="reserved-container"></div>
+      <h3 class="dashboard-title">Confirmed Bookings</h3>
+      <section class="reserved-container" id="bookingContainer">
+        <!-- Bookings will be populated here -->
       </section>
-
-      <!-- Reserved Workspaces (User View) -->
-      <section id="reservedContainer" class="reserved-container">
-        <h3>My Reserved Workspaces</h3>
-        <!-- Reserved workspace details will be injected here via reserved.js -->
-      </section>
-
-      <!-- Modify Reservation Modal (For Users) -->
-      <div id="modifyModal" class="modal">
-        <div class="modal-content">
-          <span id="closeModify" class="close">&times;</span>
-          <h3>Modify Reservation</h3>
-          <label for="modifyDate">Reservation Date:</label>
-          <input type="date" id="modifyDate" required />
-
-          <label for="modifyStartTime">Start Time:</label>
-          <input type="time" id="modifyStartTime" required />
-
-          <label for="modifyEndTime">End Time:</label>
-          <input type="time" id="modifyEndTime" required />
-
-          <button id="confirmModify" disabled>Confirm Changes</button>
-        </div>
-      </div>
     </main>
-    <script type="module" src="js/reserved.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        loadMockRooms();
+        loadMockBookings();
+
+        document
+          .getElementById("addRoomForm")
+          .addEventListener("submit", (e) => {
+            e.preventDefault();
+            const roomName = document.getElementById("roomName").value.trim();
+            const roomType = document.getElementById("roomType").value.trim();
+            const roomPrice = document.getElementById("roomPrice").value.trim();
+            const roomLocation = document
+              .getElementById("roomLocation")
+              .value.trim();
+
+            if (roomName && roomType && roomPrice && roomLocation) {
+              addMockRoom({
+                name: roomName,
+                type: roomType,
+                price: roomPrice,
+                location: roomLocation,
+              });
+              loadMockRooms();
+              alert("Room added successfully!");
+            }
+          });
+      });
+
+      let mockRooms = [
+        {
+          id: "1",
+          name: "Room A",
+          type: "Conference",
+          price: 50,
+          location: "New York",
+        },
+        {
+          id: "2",
+          name: "Room B",
+          type: "Private Office",
+          price: 100,
+          location: "London",
+        },
+      ];
+
+      function loadMockRooms() {
+        const roomContainer = document.getElementById("roomContainer");
+        roomContainer.innerHTML = "";
+        mockRooms.forEach((room) => {
+          const roomElement = document.createElement("div");
+          roomElement.classList.add("dashboard-card");
+          roomElement.innerHTML = `
+            <h3>${room.name}</h3>
+            <p>Type: ${room.type}</p>
+            <p>Price: $${room.price}</p>
+            <p>Location: ${room.location}</p>
+            <button onclick="deleteMockRoom('${room.id}')">Delete</button>
+          `;
+          roomContainer.appendChild(roomElement);
+        });
+      }
+
+      function deleteMockRoom(roomId) {
+        if (confirm("Are you sure you want to delete this room?")) {
+          mockRooms = mockRooms.filter((room) => room.id !== roomId);
+          loadMockRooms();
+          alert("Room deleted successfully!");
+        }
+      }
+
+      let mockBookings = [
+        { id: "101", username: "John Doe", room: "Room A", date: "2025-03-01" },
+        {
+          id: "102",
+          username: "Jane Smith",
+          room: "Room B",
+          date: "2025-03-02",
+        },
+      ];
+
+      function loadMockBookings() {
+        const bookingContainer = document.getElementById("bookingContainer");
+        bookingContainer.innerHTML = "";
+        mockBookings.forEach((booking) => {
+          const bookingElement = document.createElement("div");
+          bookingElement.classList.add("dashboard-card");
+          bookingElement.innerHTML = `
+            <h3>${booking.room}</h3>
+            <p>User: ${booking.username}</p>
+            <p>Date: ${booking.date}</p>
+            <button onclick="deleteMockBooking('${booking.id}')">Delete</button>
+          `;
+          bookingContainer.appendChild(bookingElement);
+        });
+      }
+
+      function deleteMockBooking(bookingId) {
+        if (confirm("Are you sure you want to delete this booking?")) {
+          mockBookings = mockBookings.filter(
+            (booking) => booking.id !== bookingId
+          );
+          loadMockBookings();
+          alert("Booking deleted successfully!");
+        }
+      }
+    </script>
+
     <script type="module" src="js/admin.js"></script>
   </body>
 </html>
