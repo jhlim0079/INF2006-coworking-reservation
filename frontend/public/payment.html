@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment - Co-Working Reservation</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    /* Basic styles for payment page layout */
+    .payment-page {
+      max-width: 400px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .payment-page h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .payment-page form div {
+      margin-bottom: 15px;
+    }
+    .payment-page form label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    .payment-page form input,
+    .payment-page form select {
+      width: 100%;
+      padding: 8px;
+      font-size: 1rem;
+    }
+    #payButton {
+      background-color: #ff6600;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      width: 100%;
+      font-size: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      opacity: 0.6;
+    }
+    #payButton:enabled {
+      opacity: 1;
+    }
+    #payButton:hover {
+      background-color: #e65c00;
+    }
+    .error-message {
+      color: red;
+      font-size: 0.85rem;
+      margin-top: 5px;
+      text-decoration: underline;
+    }
+    .input-hint {
+      font-size: 0.85rem;
+      color: #777;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <div class="logo">
+        <h1>Co-Working Reservation</h1>
+      </div>
+      <ul class="nav-links">
+        <li><a href="user.html">User Dashboard</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="payment-page">
+    <h2>Payment</h2>
+    <form id="paymentForm">
+      <div>
+        <label for="cardNumber">Credit Card Number:</label>
+        <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" required />
+        <div id="cardNumberError" class="error-message"></div>
+        <div class="input-hint">Format: 16 digits (e.g., 1234 5678 9012 3456)</div>
+      </div>
+      <div>
+        <label for="expiryMonth">Expiry Date:</label>
+        <select id="expiryMonth" required>
+          <option value="">Month</option>
+          <option value="01">January</option>
+          <option value="02">February</option>
+          <option value="03">March</option>
+          <option value="04">April</option>
+          <option value="05">May</option>
+          <option value="06">June</option>
+          <option value="07">July</option>
+          <option value="08">August</option>
+          <option value="09">September</option>
+          <option value="10">October</option>
+          <option value="11">November</option>
+          <option value="12">December</option>
+        </select>
+        <select id="expiryYear" required>
+          <option value="">Year</option>
+          <!-- Years will be populated dynamically -->
+        </select>
+        <div id="expiryDateError" class="error-message"></div>
+      </div>
+      <div>
+        <label for="cvv">CVV:</label>
+        <input type="text" id="cvv" placeholder="123" required />
+        <div id="cvvError" class="error-message"></div>
+        <div class="input-hint">Format: 3 or 4 digits (e.g., 123)</div>
+      </div>
+      <button type="submit" id="payButton" disabled>Pay Now</button>
+    </form>
+  </main>
+
+  <script type="module" src="js/payment.js"></script>
+  <script>
+    // Dynamically populate the year dropdown
+    const yearSelect = document.getElementById('expiryYear');
+    const currentYear = new Date().getFullYear();
+    for (let i = 0; i < 10; i++) {
+      const year = currentYear + i;
+      const option = document.createElement('option');
+      option.value = year;
+      option.textContent = year;
+      yearSelect.appendChild(option);
+    }
+
+    // Form validation function
+    document.getElementById('paymentForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      // Retrieve selected month and year
+      const expiryMonth = document.getElementById('expiryMonth').value;
+      const expiryYear = document.getElementById('expiryYear').value;
+      const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, ''); // Remove spaces for validation
+      const cvv = document.getElementById('cvv').value;
+
+      // Clear any previous error messages
+      document.getElementById('cardNumberError').textContent = '';
+      document.getElementById('expiryDateError').textContent = '';
+      document.getElementById('cvvError').textContent = '';
+
+      // Validate card number (16 digits)
+      if (!/^\d{16}$/.test(cardNumber)) {
+        document.getElementById('cardNumberError').textContent = 'Please enter a valid 16-digit card number.';
+        return;
+      }
+
+      // Validate expiry date
+      if (!expiryMonth || !expiryYear) {
+        document.getElementById('expiryDateError').textContent = 'Please select a valid expiry date.';
+        return;
+      }
+
+      const currentYearInt = new Date().getFullYear();
+      const currentMonthInt = new Date().getMonth() + 1;
+      if (parseInt(expiryYear) < currentYearInt || (parseInt(expiryYear) === currentYearInt && parseInt(expiryMonth) < currentMonthInt)) {
+        document.getElementById('expiryDateError').textContent = 'The card has expired.';
+        return;
+      }
+
+      // Validate CVV (3 or 4 digits)
+      if (!/^\d{3,4}$/.test(cvv)) {
+        document.getElementById('cvvError').textContent = 'Please enter a valid CVV (3 or 4 digits).';
+        return;
+      }
+
+      // Simulate payment processing
+      alert("Payment successful! Thank you for your booking.");
+
+      // Clear the booking details if needed
+      localStorage.removeItem('bookingDetails');
+
+      // Redirect to the reservations page (user.html)
+      window.location.href = 'user.html';
+    });
+
+    // Enable the Pay Now button if all fields are valid
+    document.getElementById('paymentForm').addEventListener('input', () => {
+      const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, '');
+      const expiryMonth = document.getElementById('expiryMonth').value;
+      const expiryYear = document.getElementById('expiryYear').value;
+      const cvv = document.getElementById('cvv').value;
+
+      const isFormValid = /^\d{16}$/.test(cardNumber) && expiryMonth && expiryYear && /^\d{3,4}$/.test(cvv);
+      document.getElementById('payButton').disabled = !isFormValid;
+    });
+  </script>
+</body>
+</html>

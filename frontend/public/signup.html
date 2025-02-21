@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up - CoWork Reserve</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <!-- Navigation/Header -->
+  <header>
+    <nav>
+      <div class="logo">
+        <h1>Co-Working Reservation</h1>
+      </div>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="signup-page">
+    <h2 class="signup-title">Sign Up</h2>
+    <form id="signupForm" class="signup-form">
+      <label for="signupUsername">Username:</label>
+      <input type="text" id="signupUsername" required />
+
+      <label for="signupEmail">Email:</label>
+      <input type="email" id="signupEmail" required />
+
+      <label for="signupPassword">Password:</label>
+      <input type="password" id="signupPassword" required />
+
+      <button type="submit" class="signup-btn">Sign Up</button>
+    </form>
+    <p class="signup-login-link">
+      Already have an account? <a href="login.html">Login now.</a>
+    </p>
+  </main>
+
+  <!-- Link to the signup JS module -->
+  <script type="module" src="js/signup.js"></script>
+</body>
+</html>

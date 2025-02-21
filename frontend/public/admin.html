@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - Co-Working Reservation</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    /* Global Styles and Sticky Footer */
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+    .wrapper {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    main {
+      flex: 1;
+      padding: 20px;
+    }
+    /* Navigation Styles */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+    }
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 15px;
+    }
+    .nav-links li a {
+      text-decoration: none;
+      color: white;
+    }
+    .logout-btn {
+      color: red;
+    }
+    /* Dashboard and Tabs Styling */
+    .dashboard-title {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .tabs {
+      display: flex;
+      border-bottom: 2px solid #ccc;
+      margin-bottom: 20px;
+    }
+    .tabs button {
+      background: none;
+      border: none;
+      outline: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .tabs button.active {
+      border-bottom: 2px solid #333;
+      font-weight: bold;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    /* Table Styles */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+    /* Add Room Form */
+    .manage-room {
+      margin-top: 20px;
+    }
+    .manage-room input, .manage-room button {
+      padding: 10px;
+      margin: 5px;
+    }
+    /* Footer Styling */
+    footer {
+      background-color: #f1f1f1;
+      text-align: center;
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <!-- Header and Navigation -->
+    <header>
+      <nav>
+        <div class="logo">
+          <h1>Co-Working Reservation</h1>
+        </div>
+        <ul class="nav-links">
+          <li><a href="user.html">User Dashboard</a></li>
+          <li><a href="index.html" id="logoutLink" class="logout-btn">Logout</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="dashboard-container">
+      <h2 class="dashboard-title">Admin Dashboard</h2>
+      
+      <!-- Tab Buttons -->
+      <div class="tabs">
+        <button class="tab-button active" data-tab="users">Users</button>
+        <button class="tab-button" data-tab="bookings">Bookings</button>
+        <button class="tab-button" data-tab="rooms">Rooms</button>
+      </div>
+      
+      <!-- Users Tab Content -->
+      <div id="users" class="tab-content active">
+        <h3>Users</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Email</th>
+              <th>Role</th>
+            </tr>
+          </thead>
+          <tbody id="usersTable">
+            <!-- Users data will be loaded here -->
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Bookings Tab Content -->
+      <div id="bookings" class="tab-content">
+        <h3>Bookings</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>User ID</th>
+              <th>Room ID</th>
+              <th>Date</th>
+              <th>Confirmed</th>
+            </tr>
+          </thead>
+          <tbody id="bookingsTable">
+            <!-- Bookings data will be loaded here -->
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Rooms Tab Content -->
+      <div id="rooms" class="tab-content">
+        <h3>Rooms</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Room Type</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody id="roomsTable">
+            <!-- Rooms data will be loaded here -->
+          </tbody>
+        </table>
+        
+        <!-- Add New Room Form -->
+        <section class="manage-room">
+          <h3>Add New Room</h3>
+          <form id="addRoomForm">
+            <input type="text" id="roomName" placeholder="Room Name" required />
+            <input type="text" id="roomType" placeholder="Room Type" required />
+            <input type="number" id="roomPrice" placeholder="Price" required />
+            <button type="submit">Add Room</button>
+          </form>
+        </section>
+      </div>
+    </main>
+
+    <!-- Sticky Footer -->
+    <footer>
+      <p>&copy; 2025 CoWork Reserve. All Rights Reserved.</p>
+    </footer>
+  </div>
+
+  <script>
+    // Tab Switching Functionality
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const target = button.getAttribute('data-tab');
+        tabButtons.forEach(btn => btn.classList.remove('active'));
+        tabContents.forEach(content => content.classList.remove('active'));
+        button.classList.add('active');
+        document.getElementById(target).classList.add('active');
+      });
+    });
+
+    // Base URL for API endpoints
+    const API_BASE_URL = 'http://localhost:3000';
+
+    // Functions to Load Data into Tables Using GET Endpoints
+    function loadUsers() {
+      fetch(`${API_BASE_URL}/api/users`)
+        .then(response => {
+          if (!response.ok) {
+            return response.text().then(text => { 
+              throw new Error(`Error fetching users: ${response.status} ${response.statusText}. Response: ${text}`);
+            });
+          }
+          return response.json();
+        })
+        .then(users => {
+          const usersTable = document.getElementById('usersTable');
+          usersTable.innerHTML = '';
+          users.forEach(user => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${user.id}</td>
+              <td>${user.email}</td>
+              <td>${user.role}</td>
+            `;
+            usersTable.appendChild(row);
+          });
+        })
+        .catch(error => console.error('Error fetching users:', error));
+    }
+
+    function loadBookings() {
+      fetch(`${API_BASE_URL}/api/bookings/all`)
+        .then(response => {
+          if (!response.ok) {
+            return response.text().then(text => { 
+              throw new Error(`Error fetching bookings: ${response.status} ${response.statusText}. Response: ${text}`);
+            });
+          }
+          return response.json();
+        })
+        .then(bookings => {
+          const bookingsTable = document.getElementById('bookingsTable');
+          bookingsTable.innerHTML = '';
+          bookings.forEach(booking => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${booking.id}</td>
+              <td>${booking.userId}</td>
+              <td>${booking.roomId}</td>
+              <td>${booking.date}</td>
+              <td>${booking.confirmed ? 'Yes' : 'No'}</td>
+            `;
+            bookingsTable.appendChild(row);
+          });
+        })
+        .catch(error => console.error('Error fetching bookings:', error));
+    }
+
+    function loadRooms() {
+      fetch(`${API_BASE_URL}/api/rooms`)
+        .then(response => {
+          if (!response.ok) {
+            return response.text().then(text => { 
+              throw new Error(`Error fetching rooms: ${response.status} ${response.statusText}. Response: ${text}`);
+            });
+          }
+          return response.json();
+        })
+        .then(rooms => {
+          const roomsTable = document.getElementById('roomsTable');
+          roomsTable.innerHTML = '';
+          rooms.forEach(room => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${room.id}</td>
+              <td>${room.name}</td>
+              <td>${room.roomType}</td>
+              <td>$${room.price}</td>
+            `;
+            roomsTable.appendChild(row);
+          });
+        })
+        .catch(error => console.error('Error fetching rooms:', error));
+    }
+
+    // Initial Data Load on DOMContentLoaded
+    document.addEventListener('DOMContentLoaded', () => {
+      loadUsers();
+      loadBookings();
+      loadRooms();
+    });
+
+    // Add New Room Functionality
+    document.getElementById('addRoomForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const roomName = document.getElementById('roomName').value.trim();
+      const roomType = document.getElementById('roomType').value.trim();
+      const roomPrice = document.getElementById('roomPrice').value.trim();
+
+      if (roomName && roomType && roomPrice) {
+        // For now, we're simply logging the new room data.
+        // You could update this section to perform a POST request to add the room.
+        const newRoom = {
+          id: Date.now(), // Example unique ID
+          name: roomName,
+          roomType: roomType,
+          price: parseFloat(roomPrice)
+        };
+        console.log('New Room:', newRoom);
+        const token = localStorage.getItem("token");
+
+        // Optionally, you can send a POST request to your API:
+        fetch(`${API_BASE_URL}/api/rooms`, {
+          method: 'POST',
+          headers: {          "Authorization": `Bearer ${token}`,
+          'Content-Type': 'application/json' },
+          body: JSON.stringify(newRoom)
+        })
+        .then(response => response.json())
+        .then(data => {
+          loadRooms(); // Refresh rooms after adding
+        })
+        .catch(error => console.error('Error adding room:', error));
+
+        loadRooms();
+        alert('Room added successfully!');
+        // Clear form fields
+        document.getElementById('roomName').value = '';
+        document.getElementById('roomType').value = '';
+        document.getElementById('roomPrice').value = '';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Available Rooms - CoWork Reserve</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    /* Global Styles for sticky footer */
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+    .wrapper {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    main {
+      flex: 1;
+    }
+    
+    /* Modal Styling */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      width: 50%;
+      max-height: 80%;
+      overflow-y: auto;
+      position: relative;
+    }
+    .close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      cursor: pointer;
+      font-size: 20px;
+    }
+    
+    /* Header row for bookings and button */
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+    }
+    
+    /* Room and Booking Styling */
+    .room-list, .booking-list {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .room-item, .booking-item {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 10px;
+      width: 300px;
+      background-color: #f9f9f9;
+      text-align: center;
+    }
+    
+    /* Status Styling */
+    .status-box {
+      padding: 8px 12px;
+      border-radius: 4px;
+      color: white;
+      font-weight: bold;
+      text-align: center;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+    .status-confirmed { background-color: green; }
+    .status-pending { background-color: red; }
+    
+    /* Buttons */
+    .button-group {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    .pay-button { 
+      background-color: blue; 
+      color: white; 
+      border: none; 
+      padding: 8px 12px; 
+      border-radius: 4px; 
+      cursor: pointer; 
+    }
+    .delete-button { 
+      background-color: red; 
+      color: white; 
+      border: none; 
+      padding: 8px 12px; 
+      border-radius: 4px; 
+      cursor: pointer; 
+    }
+
+    #openModal {
+      background-color: blue; 
+      color: white; 
+      border: none; 
+      padding: 8px 12px; 
+      border-radius: 4px; 
+      cursor: pointer; 
+    }
+    
+    /* Footer Styling */
+    footer {
+      background-color: #313131;
+      text-align: center;
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <!-- Navigation -->
+    <header>
+      <nav>
+        <div class="logo">
+          <h1>Co-Working Reservation</h1>
+        </div>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="login.html">Login</a></li>
+          <li><a href="user.html">User Dashboard</a></li>
+          <li><a href="admin.html">Admin Dashboard</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      <!-- Combined header row with "Your Bookings" and "View Available Rooms" button -->
+      <div class="header-row">
+        <h2>Your Bookings</h2>
+        <button id="openModal">View Available Rooms</button>
+      </div>
+      
+      <div class="booking-list" id="bookingList"></div>
+      
+      <!-- Modal -->
+      <div id="roomModal" class="modal" style="display: none;">
+        <div class="modal-content">
+          <span class="close" id="closeModal">&times;</span>
+          <h2>Available Rooms</h2>
+          <div class="room-list" id="roomList"></div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <p>&copy; 2025 CoWork Reserve. All Rights Reserved.</p>
+    </footer>
+  </div>
+
+  <script>
+    // Modal functionality
+    document.getElementById("openModal").addEventListener("click", function() {
+      document.getElementById("roomModal").style.display = "block";
+      fetchRooms();
+    });
+
+    document.getElementById("closeModal").addEventListener("click", function() {
+      document.getElementById("roomModal").style.display = "none";
+    });
+
+    // Fetch available rooms for the modal
+    function fetchRooms() {
+      fetch("http://localhost:3000/api/rooms")
+        .then(response => response.json())
+        .then(rooms => {
+          const roomList = document.getElementById("roomList");
+          roomList.innerHTML = "";
+          rooms.forEach(room => {
+            const roomDiv = document.createElement("div");
+            roomDiv.classList.add("room-item");
+            roomDiv.innerHTML = `
+              <h3>${room.name}</h3>
+              <p>Type: ${room.roomType}</p>
+              <p>Price: $${room.price}</p>
+              <button onclick="bookRoom(${room.id})">Book</button>
+            `;
+            roomList.appendChild(roomDiv);
+          });
+        })
+        .catch(error => console.error("Error fetching rooms:", error));
+    }
+
+    // Fetch room name by roomId
+    function fetchRoomName(roomId) {
+      return fetch(`http://localhost:3000/api/rooms/${roomId}`)
+        .then(response => response.json())
+        .then(room => room.name)
+        .catch(error => {
+          console.error("Error fetching room name:", error);
+          return "Unknown Room";
+        });
+    }
+
+    // Create a new booking
+    function bookRoom(roomId) {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No JWT token found.");
+        return;
+      }
+      fetch("http://localhost:3000/api/bookings", {
+        method: "POST",
+        headers: { 
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ roomId, date: new Date().toISOString().split("T")[0] })
+      })
+      .then(response => response.json())
+      .then(data => {
+        alert("Booking successful!");
+        document.getElementById("roomModal").style.display = "none";
+        fetchBookings();
+      })
+      .catch(error => alert("Booking failed!"));
+    }
+
+    // Fetch bookings and update the displayed list
+    function fetchBookings() {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No JWT token found.");
+        return;
+      }
+      fetch("http://localhost:3000/api/bookings", {
+        headers: { "Authorization": `Bearer ${token}` }
+      })
+        .then(response => response.json())
+        .then(async bookings => {
+          const bookingList = document.getElementById("bookingList");
+          bookingList.innerHTML = "";
+
+          for (const booking of bookings) {
+            // Fetch the room name using the roomId from booking
+            const roomName = await fetchRoomName(booking.roomId);
+
+            const confirmedStatus = booking.confirmed ? "Confirmed" : "Pending Payment";
+            const statusClass = booking.confirmed ? "status-confirmed" : "status-pending";
+            const isConfirmed = booking.confirmed ? "disabled" : "";
+
+            const bookingDiv = document.createElement("div");
+            bookingDiv.classList.add("booking-item");
+            bookingDiv.innerHTML = `
+              <div class="booking-content">
+                <p><strong>Room:</strong> ${roomName}</p>
+                <p><strong>Date:</strong> ${booking.date}</p>
+                <div class="status-box ${statusClass}" id="status-${booking.id}">${confirmedStatus}</div>
+                <div class="button-group">
+                  <button class="pay-button" id="pay-${booking.id}" onclick="payBooking(${booking.id})" ${isConfirmed}>Pay</button>
+                  <button class="delete-button" onclick="deleteBooking(${booking.id})">Delete</button>
+                </div>
+              </div>
+            `;
+            bookingList.appendChild(bookingDiv);
+          }
+        })
+        .catch(error => console.error("Error fetching bookings:", error));
+    }
+
+    // Delete a booking
+    function deleteBooking(bookingId) {
+      const confirmation = confirm("Are you sure you want to delete this booking?");
+      if (confirmation) {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.error("No JWT token found.");
+          return;
+        }
+        fetch(`http://localhost:3000/api/bookings/${bookingId}`, {
+          method: "DELETE",
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        })
+        .then(response => {
+          if (response.ok) {
+            alert("Booking deleted successfully!");
+            fetchBookings();
+          } else {
+            alert("Failed to delete booking.");
+          }
+        })
+        .catch(error => console.error("Error deleting booking:", error));
+      }
+    }
+
+    // Process payment for a booking
+    function payBooking(bookingId) {
+      const confirmation = confirm("Amount will be deducted from your account.");
+      if (confirmation) {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.error("No JWT token found.");
+          return;
+        }
+        fetch(`http://localhost:3000/api/bookings/${bookingId}/payment`, {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        })
+        .then(response => {
+          if (response.ok) {
+            alert("Payment successful!");
+            document.getElementById(`pay-${bookingId}`).disabled = true;
+            document.getElementById(`pay-${bookingId}`).style.backgroundColor = "gray";
+            document.getElementById(`pay-${bookingId}`).innerText = "Paid";
+            document.getElementById(`status-${bookingId}`).innerText = "Confirmed";
+            document.getElementById(`status-${bookingId}`).classList.remove("status-pending");
+            document.getElementById(`status-${bookingId}`).classList.add("status-confirmed");
+          } else {
+            alert("Payment failed.");
+          }
+        })
+        .catch(error => console.error("Error processing payment:", error));
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", fetchBookings);
+  </script>
+</body>
+</html>
