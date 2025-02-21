@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const roomsContainer = document.getElementById("roomsContainer");
 
   try {
-    const response = await fetch("http://localhost:3000/api/rooms");
+    const response = await fetch("http://52.87.178.64:3000/api/rooms");
     if (!response.ok) throw new Error("Failed to fetch rooms");
 
     const rooms = await response.json();
