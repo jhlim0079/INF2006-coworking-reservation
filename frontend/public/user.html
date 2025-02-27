@@ -183,7 +183,7 @@
 
     // Fetch available rooms for the modal
     function fetchRooms() {
-      fetch("http://52.87.178.64:3000/api/rooms")
+      fetch("http://34.205.157.160:3000/api/rooms")
         .then(response => response.json())
         .then(rooms => {
           const roomList = document.getElementById("roomList");
@@ -205,7 +205,7 @@
 
     // Fetch room name by roomId
     function fetchRoomName(roomId) {
-      return fetch(`http://52.87.178.64:3000/api/rooms/${roomId}`)
+      return fetch(`http://34.205.157.160:3000/api/rooms/${roomId}`)
         .then(response => response.json())
         .then(room => room.name)
         .catch(error => {
@@ -221,7 +221,7 @@
         console.error("No JWT token found.");
         return;
       }
-      fetch("http://52.87.178.64:3000/api/bookings", {
+      fetch("http://34.205.157.160:3000/api/bookings", {
         method: "POST",
         headers: { 
           "Authorization": `Bearer ${token}`,
@@ -245,7 +245,7 @@
         console.error("No JWT token found.");
         return;
       }
-      fetch("http://52.87.178.64:3000/api/bookings", {
+      fetch("http://34.205.157.160:3000/api/bookings", {
         headers: { "Authorization": `Bearer ${token}` }
       })
         .then(response => response.json())
@@ -289,7 +289,7 @@
           console.error("No JWT token found.");
           return;
         }
-        fetch(`http://52.87.178.64:3000/api/bookings/${bookingId}`, {
+        fetch(`http://34.205.157.160:3000/api/bookings/${bookingId}`, {
           method: "DELETE",
           headers: {
             "Authorization": `Bearer ${token}`
@@ -316,7 +316,7 @@
           console.error("No JWT token found.");
           return;
         }
-        fetch(`http://52.87.178.64:3000/api/bookings/${bookingId}/payment`, {
+        fetch(`http://34.205.157.160:3000/api/bookings/${bookingId}/payment`, {
           method: "POST",
           headers: {
             "Authorization": `Bearer ${token}`
